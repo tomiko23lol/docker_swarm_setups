@@ -159,6 +159,12 @@ The BACKUP node should take over and respond to requests at `192.168.23.101`.
 
 
 
-Here are actual configs that I have running on my docker nodes:
+## MY EXACT SETUP:
+
+#### Here are actual configs that I have running on my docker nodes:
+
+[config_of_each_node](hosts/apps/keepalived/config_files/)
+just place it in `/etc/keepalived/` and name file `keepalived.conf`. On each node it is called the same. 
+
 
 
