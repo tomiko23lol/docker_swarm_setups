@@ -14,7 +14,7 @@ Currently I am running with 3 VMs
 Previously I had dockernode3 set up as worker as well, but when services migrated there, it was causing issues. Most probably some kind of issue with Truenas itself and how it does networking for VMs. That is why I degraded this node to manager only, to act just as another "whitners" for cluster to have quorum in cluster and prevent split-brain scenarios.
 
 
-On top of that networking is enhanced with [KeepAlived](hosts/apps/keepalived/)
-I am runing **Portainer** as orchestrator
-Storage is replicated across all nodes by [GlusterFS](hosts/apps/glusterfs/)
+- On top of that networking is enhanced with [KeepAlived](hosts/apps/keepalived/)
+- I am runing **Portainer** as orchestrator
+- Storage is replicated across all nodes by [GlusterFS](hosts/apps/glusterfs/)
 
