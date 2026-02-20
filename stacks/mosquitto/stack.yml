@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  mqtt:
+    image: eclipse-mosquitto:latest
+    ports:
+      - "1883:1883"  # MQTT
+      - "8883:8883"  # MQTT over SSL
+      - "9001:9001"  # WebSockets
+    volumes:
+      - /mnt/mosquitto/data:/mosquitto/data:rw
+      - /mnt/mosquitto/log:/mosquitto/log:rw
+      - /mnt/mosquitto/config:/mosquitto/config:rw
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Prague
+
+
+  zigbee2mqtt:
+      container_name: zigbee2mqtt
+      image: koenkk/zigbee2mqtt:latest
+      ports:
+        - "8080:8080" # web_console
+      volumes:
+        - /mnt/zigbee2mqtt-data:/app/data:rw
+        #- /mnt/zigbee2mqtt-run:/run/udev:ro
+        #- ./zigbee2mqtt-data:/app/data
+        #- /run/udev:/run/udev:ro
+      restart: unless-stopped
+      environment:
+        - TZ=Europe/Prague
+      devices:
+        - /dev/ttyUSB0:/dev/ttyUSB0
