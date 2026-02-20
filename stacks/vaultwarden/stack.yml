@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    ports:
+      - "7080:80"
+      - "3012:3012"
+    environment:
+      - DOMAIN=https://vaultwarden.archit.top   
+      - TZ=Europe/Prague
+      - SIGNUPS_ALLOWED=true                    # Change to true if you want to allow public signups
+      - WEBSOCKET_ENABLED=true
+    volumes:
+      - '/mnt/vaultwarden/data:/data'
+    restart: unless-stopped
+    deploy:
+      replicas: 1
+#      placement:
+#        constraints:
+#          - node.labels.vaultwarden == true      # Optional: run only on tagged nodes
+
+
