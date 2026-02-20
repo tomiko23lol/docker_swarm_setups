@@ -16,5 +16,5 @@ Previously I had dockernode3 set up as worker as well, but when services migrate
 
 - On top of that networking is enhanced with [KeepAlived](hosts/apps/keepalived/)
 - I am runing **Portainer** as orchestrator
-- Storage is replicated across all nodes by [GlusterFS](hosts/apps/glusterfs/)
+- Storage is replicated across all nodes by [GlusterFS](hosts/apps/GlusterFS/)
 
