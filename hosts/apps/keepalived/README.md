@@ -13,6 +13,7 @@ The goal is to decouple **DNS records and external access** from individual node
 Keepalived is a Linux service that implements **VRRP (Virtual Router Redundancy Protocol)**.
 
 It allows multiple machines on the same network to:
+
 - Share one or more **virtual IP addresses**
 - Elect a **master node** for each virtual IP
 - Automatically **fail over** if the master goes offline
@@ -48,8 +49,8 @@ This happens in seconds and requires no client-side changes.
 
 ### Physical Nodes
 
-| Node | IP Address |
-|----|-----------|
+| Node        | IP Address      |
+| ----------- | --------------- |
 | dockernode1 | `192.168.23.21` |
 | dockernode2 | `192.168.23.22` |
 | dockernode3 | `192.168.23.23` |
@@ -58,15 +59,17 @@ This happens in seconds and requires no client-side changes.
 
 ### Virtual IPs
 
-| Virtual IP | Preferred Node |
-|-----------|---------------|
+| Virtual IP       | Preferred Node      |
+| ---------------- | ------------------- |
 | `192.168.23.101` | dockernode1 (`.21`) |
 | `192.168.23.102` | dockernode2 (`.22`) |
 | `192.168.23.103` | dockernode3 (`.23`) |
 
 Each virtual IP has:
+
 - A **primary (preferred) node**
 - Automatic failover to the other nodes if needed
+- there is `n` instances of vrrp running where `n` is number of nodes. This allows me to use each node separately and in case I prefer to use node 102 for DNS and 101 for MQTT I can split it and balance traffic comming to swarm across all docker nodes based on my needs. This is advantageous specially if there is pinning or priority set for particular containers that stay running just one node.
 
 ---
 
@@ -81,6 +84,7 @@ sudo apt install -y keepalived
 ```
 
 ### Step 2: Configure Keepalived
+
 Create or edit the Keepalived configuration file on each node (usually located at `/etc/keepalived/keepalived.conf`). Below is a sample configuration for two nodes (Node 1 and Node 2).
 
 #### Example Configuration for Node 1:
@@ -103,6 +107,7 @@ vrrp_instance VI_1 {
 
 
 ```
+
 #### Example Configuration for Node 2:
 
 ```bash
@@ -123,8 +128,8 @@ vrrp_instance VI_1 {
 
 ```
 
+### Step 3: Start Keepalived
 
-###  Step 3: Start Keepalived
 After configuring Keepalived on both nodes, start the service:
 
 ```bash
@@ -133,38 +138,35 @@ sudo systemctl enable keepalived
 
 ```
 
-
-
 ### Step 5: Verify the Setup
 
 #### Check Keepalived Status:
+
 On both nodes, check if Keepalived is running and which node is currently the MASTER.
 
 ```bash
 sudo systemctl status keepalived
 ```
+
 - Test Connectivity:
-From another machine on your local network, try to connect to some service in cluster using the virtual IP (`192.168.23.101`):
+  From another machine on your local network, try to connect to some service in cluster using the virtual IP (`192.168.23.101`):
 
 ```bash
 mosquitto_sub -h 192.168.23.101 -t test/topic
 ```
- - Simulate Failover:
-To test failover, stop Keepalived on the MASTER node:
+
+- Simulate Failover:
+  To test failover, stop Keepalived on the MASTER node:
 
 ```bash
 sudo systemctl stop keepalived
 ```
+
 The BACKUP node should take over and respond to requests at `192.168.23.101`.
-
-
 
 ## MY EXACT SETUP:
 
 #### Here are actual configs that I have running on my docker nodes:
 
 [config_of_each_node](hosts/apps/keepalived/config_files/)
-just place it in `/etc/keepalived/` and name file `keepalived.conf`. On each node it is called the same. 
-
-
-
+just place it in `/etc/keepalived/` and name file `keepalived.conf`. On each node it is called the same.
